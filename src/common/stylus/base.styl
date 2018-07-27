@@ -1,0 +1,27 @@
+body, html
+  line-height: 1
+  font-weight: 200
+  font-family: 'PingFang SC', 'STHeitiSC-Light', 'Helvetica-Light', arial, sans-serif
+
+// 实现移动端真正的1px边框
+@media (-webkit-min-device-pixel-ratio: 2),(min-device-pixel-ratio: 2)
+  .border-1px
+    &::after
+      -webkit-transform: scaleY(0.5)
+      transform: scaleY(0.5)
+// dpi为2时
+@media (-webkit-min-device-pixel-ratio: 3),(min-device-pixel-ratio:c3)
+  .border-1px
+    &::after
+      -webkit-transform: scaleY(0.333) // 通过设置 Y 轴的值来定义缩放转换
+      transform: scaleY(0.333)
+
+.clearfix // 清除浮动
+  display inline-block
+  &:after
+    display block
+    clear both
+    visibility hidden
+    height 0
+    line-height 0
+    content ''
