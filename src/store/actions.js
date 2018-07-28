@@ -2,7 +2,8 @@
 通过mutation间接更新state的多个方法的对象
  */
 
-import {RECEIVE_GOODS, RECEIVE_SELLERS, INCREMENT_FOOD_COUNT, DECREMENT_FOOD_COUNT} from './mutations-types'
+import {RECEIVE_GOODS, RECEIVE_SELLERS, INCREMENT_FOOD_COUNT,
+  DECREMENT_FOOD_COUNT, CLEAR_CART} from './mutations-types'
 import {reqShopInfo, reqShopGoods} from '../api/index'
 
 const ERR_OK = 0
@@ -24,7 +25,7 @@ export default {
       const goods = result.data
       commit(RECEIVE_GOODS, {goods})
       // 传入的回调函数
-      callback()
+      callback && callback()
     }
   },
   // 同步更新food中的count值
@@ -34,5 +35,9 @@ export default {
     } else {
       commit(DECREMENT_FOOD_COUNT, {food})
     }
+  },
+  // 清空购物车
+  clearCart ({commit}) {
+    commit(CLEAR_CART)
   }
 }

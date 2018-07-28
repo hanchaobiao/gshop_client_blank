@@ -15,7 +15,7 @@
           <li v-for="(item, index) in goods" class="food-list-hook" :key="index">
             <h1 class="title">{{item.name}}</h1>
             <ul>
-              <li v-for="(food, index2) in item.foods" class="food-item border-1px" :key="index2">
+              <li v-for="(food, index2) in item.foods" class="food-item border-1px" :key="index2" @click="showFood(food)">
                 <div class="icon">
                   <img width="57" height="57" :src="food.icon"/>
                 </div>
@@ -38,12 +38,16 @@
           </li>
         </ul>
       </div>
+      <shopcart/>
+      <food :food="food" ref="food"></food>
     </div>
 </template>
 
 <script>
 import {mapState} from 'vuex'
 import cartcontrol from '../cartcontrol/cartcontrol'
+import shopcart from '../shopcart/shapcart'
+import food from '../food/food'
 import BScroll from 'better-scroll'
 // 滚动
 
@@ -58,7 +62,7 @@ export default {
   computed: {
     ...mapState(['goods']),
     // 计算得到当前分类的下标
-    currentIndex () { // 初始和相关数据发生了变化
+    currentIndex () { // 初始和相关数据发生了变化时执行
       // 得到条件数据
       const {scrollY, tops} = this
       // 根据条件计算产生一个结果
@@ -85,6 +89,7 @@ export default {
       new BScroll('.menu-wrapper', {
         click: true
       })
+      // http://ustbhuangyi.github.io/better-scroll/doc/events.html#scroll
       this.foodsScroll = new BScroll('.foods-wrapper', {
         probeType: 2, // 因为惯性滑动不会触发
         click: true
@@ -109,6 +114,7 @@ export default {
       // 2. 收集
       // 找到所有分类的li
       const lis = this.$refs.foodsUl.getElementsByClassName('food-list-hook')
+      // 将伪数组转为真数组
       Array.prototype.slice.call(lis).forEach(li => {
         top += li.clientHeight
         tops.push(top)
@@ -116,7 +122,6 @@ export default {
 
       // 3. 更新数据
       this.tops = tops
-      console.log(tops)
     },
     clickMenuItem (index) {
       // 使用右侧列表滑动到对应的位置
@@ -127,10 +132,19 @@ export default {
       this.scrollY = scrollY
       // 平滑滑动右侧列表
       this.foodsScroll.scrollTo(0, -scrollY, 300)
+    },
+    // 显示点击的food
+    showFood (food) {
+      // 设置food
+      this.food = food
+      // 显示food组件 (在父组件中调用子组件对象的方法)
+      this.$refs.food.toggleShow()
     }
   },
   components: {
-    cartcontrol
+    cartcontrol,
+    shopcart,
+    food
   }
 }
 </script>
@@ -141,7 +155,7 @@ export default {
     display flex // 设置bottom top 就能决定其高度
     position absolute
     top 174px
-    bottom 46px
+    bottom 48px
     width 100%
     overflow hidden
     .menu-wrapper
